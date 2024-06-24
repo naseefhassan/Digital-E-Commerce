@@ -1,10 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 import { ErrorMessage, Field, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../Api/axios";
 import { useState } from "react";
 
 function Signup() {
+  const navigate = useNavigate()
   const [error, setError] = useState("");
 
   const initialValues = {
@@ -19,11 +20,8 @@ function Signup() {
 
   function validation(values) {
     const password = values.password;
-    console.log(password);
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     const check = regex.test(password);
-    console.log(check);
-    console.log("hlo");
     return check;
   }
   return (
@@ -33,6 +31,7 @@ function Signup() {
         try {
           if (validation(values)) {
             const response = await axiosInstance.post("/signup", values);
+            navigate('/')
             resetForm();
             console.log(response);
           } else {
@@ -41,6 +40,10 @@ function Signup() {
           }
         } catch (error) {
           console.error("There was an error signing up!", error);
+          if(error.response &&
+            error.response.status === 400){
+                setError('Signup Errored')
+            }
         }
       }}
     >
