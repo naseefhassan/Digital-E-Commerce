@@ -3,9 +3,12 @@ import { ErrorMessage, Field, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../Api/axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setToken } from "../../Redux/Jwt";
 
 function Signup() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [error, setError] = useState("");
 
   const initialValues = {
@@ -29,14 +32,22 @@ function Signup() {
       initialValues={initialValues}
       onSubmit={async (values, { resetForm }) => {
         try {
-          if (validation(values)) {
-            const response = await axiosInstance.post("/signup", values);
-            navigate('/')
-            resetForm();
-            console.log(response);
-          } else {
-            setError("password must follow cyrtiria");
-            console.log("password must follow cyrtiria");
+          if(values.username !== '' && values.email !== '' && values.password !== ""){
+            if (validation(values)) {
+                const response = await axiosInstance.post("/signup", values);
+                const JWT =  response.data.token
+                localStorage.setItem('Jwt', JWT)
+                dispatch(setToken(JWT))
+                navigate('/')
+                resetForm();
+                
+              } else {
+                setError("password must follow cyrtiria");
+                console.log("password must follow cyrtiria");
+              }
+          }
+          else{
+            setError('Please fill the form completely')
           }
         } catch (error) {
           console.error("There was an error signing up!", error);

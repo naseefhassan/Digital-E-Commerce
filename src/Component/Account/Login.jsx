@@ -2,10 +2,13 @@ import { ErrorMessage, Field, Formik } from 'formik'
 import { Link, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../Api/axios'
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../Redux/Jwt';
 
 function Login() {
-    const [error, setError] = useState("");
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [error, setError] = useState("");
     const initialValues = {
         email:'',
         password:''
@@ -14,7 +17,9 @@ function Login() {
     <Formik initialValues={initialValues} onSubmit={async(values)=>{
         try {
             const response = await axiosInstance.post('/login',values)
-            console.log(response);
+            const JWT = response.data.token
+            localStorage.setItem('Jwt', JWT )
+            dispatch(setToken(JWT))
             navigate('/')
         } catch (error) {
             if(error.response &&
@@ -26,7 +31,7 @@ function Login() {
     }}>
         {({values,handleSubmit,handleChange,handleBlur})=>(
            <div className="flex justify-center items-center min-h-screen ">
-           <div className="w-7/12 m-auto sm:flex sm:h-[400px] shadow-xl rounded-xl ">
+           <div className="w-7/12 m-auto sm:flex  sm:h-[400px] shadow-xl rounded-xl ">
            <div className=" sm:w-1/2 bg-blue-600 rounded-xl">
             <h1 className="text-center text-3xl text-white font-bold p-4">Looks like you're new here!</h1>
             <h1 className="p-4 text-gray-300 font-mono ">"Get access to your Orders, Wishlist and Recommendations"</h1>
