@@ -4,10 +4,18 @@ import axiosInstance from '../../Api/axios'
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../../Redux/Jwt';
+import view from '../../assets/Images/view.png'
+import hide from '../../assets/Images/hide.png'
 
 function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const [showPass, setShowPass] = useState(false)
+
+    const togglePassword = () =>{
+        setShowPass((showPass) => !showPass)
+    }
+
     const [error, setError] = useState("");
     const initialValues = {
         email:'',
@@ -42,8 +50,13 @@ function Login() {
                <Field type='email' id='email' name='email' values={values.email} onChange={handleChange}  onBlur={handleBlur} placeholder='Email' className='p-1 text-center rounded-md border-2'></Field>
                <ErrorMessage name="email" component='div' className="error"/>
 
-               <Field type='password' id='password' name='password' values={values.password} onChange={handleChange}  onBlur={handleBlur} placeholder='Password' className='p-1 text-center rounded-md border-2'></Field>
-               <ErrorMessage name="password" component='div' className="error"/>
+              <div>
+                <div className='relative'>
+                    {showPass ? <img onClick={togglePassword} className='w-5 h-5 absolute right-2 top-2' src={view} alt="" />: <img onClick={togglePassword} className='w-5 h-5 absolute right-2 top-2' src={hide} alt="" />}
+                 <Field type={showPass ? 'text' : 'password'} id='password' name='password' values={values.password} onChange={handleChange}  onBlur={handleBlur} placeholder='Password' className='p-1 text-center rounded-md border-2 w-full'></Field>
+                </div>
+              <ErrorMessage name="password" component='div' className="error"/>
+              </div>
 
                <button type="submit" className="bg-blue-600 p-1 font-mono rounded-md">Login</button>
                <p className="text-red-500 text-center text-[12px]">{error}</p>

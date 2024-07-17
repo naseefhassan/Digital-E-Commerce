@@ -15,12 +15,10 @@ function PrivateRoute() {
     if(localJwt && ! token){
       dispatch(setToken(localJwt))
       navigate('/')
-      console.log('1');
     }
 
     if(!localJwt && !token){
       navigate('/auth/login')
-      console.log('2');
     }
 
   },[navigate,dispatch,token])
