@@ -40,7 +40,6 @@ function Signup() {
                 dispatch(setToken(JWT))
                 navigate('/')
                 resetForm();
-                
               } else {
                 setError("password must follow cyrtiria");
                 console.log("password must follow cyrtiria");
